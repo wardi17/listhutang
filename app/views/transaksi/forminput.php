@@ -154,6 +154,7 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
                                         </div>
                                     </div>
                                 <div id="tampilCurrrencry"></div>
+                                <div id="tampilnokapal"></div>
                                <div class="row align-items-center mb-3" id="barisPembayaran">
                                   <!-- Rencana Bayar -->
                                   <label for="recan_bayar"  class="col-auto col-form-label">Rencana Bayar</label>
@@ -219,6 +220,7 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
       // Bersihkan area klikbayar
       $("#klikbayar").empty();
 
+      $("#tampilnokapal").empty();
       $("#tampilCurrrencry").empty();
       // Jika bukan Supplier lokal atau Supplier import
       if (selected !== 'Supplier lokal' && selected !== 'Supplier import') {
@@ -245,6 +247,18 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
 
           $("#tampilCurrrencry").html(html1);   
              getCurrency();
+      }
+
+     
+      if(selected == 'Supplier lokal' || selected == 'Supplier import'){
+         const html2 =`<div class="row col-md-12 mb-3">
+                                                <label  style="width:10%;" for="truck" class="col-sm-3 form-label">No Kapal</label>
+                                            <div class="col-sm-4">
+                                               <input id="truck" name="truck"  type="text" class="form-control">
+                                                <span id="truckError" class="error"></span>
+                                            </div>
+                                     </div>`;
+        $("#tampilnokapal").html(html2);  
       }
     });
 
@@ -396,6 +410,7 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
         const kurs     = $("#kurs").val();
         const Customer = $("#Customer").find(":selected").val();
        let tglbayar = $("#tanggalbayar").val();
+       const truck  = $("#truck").val();
       let tanggalbayar = (tglbayar === undefined || tglbayar === null) ? '' : tglbayar;
       let curren = (Currency === undefined || Currency === null) ?'Rp' : Currency;
     let kurrest = (kurs === undefined || kurs === null) ? 0 : kurs;
@@ -431,7 +446,8 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
                 "tanggalbayar":tanggalbayar,
                 "Currency":curren,
                 "kurs":kurrest,
-                "Customer":Customer
+                "Customer":Customer,
+                "truck":truck
 
             }
             // console.log(datas)

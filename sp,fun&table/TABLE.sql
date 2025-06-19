@@ -31,12 +31,14 @@ CREATE TABLE Listhutang(
     Currency VARCHAR(10) NULL,
     Kurs FLOAT DEFAULT 0,
     CustomerID CHAR(10) NULL,
+    truck VARCHAR(30) NULL,
      PRIMARY KEY(Id_Trans)
 );
 
 
 ALTER TABLE Listhutang
-ADD  CustomerID CHAR(10) NULL;
+ADD  truck VARCHAR(30) NULL;
+
  
 --untuk alert nama kolom
 EXEC sp_rename 'Listhutang.CustomerID', 'SupplierID', 'COLUMN';

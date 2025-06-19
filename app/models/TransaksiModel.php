@@ -173,6 +173,7 @@ class TransaksiModel{
         $Currency           = $this->test_input($post["Currency"]);
         $kurs               = $this->test_input($post["kurs"]);
         $Customer           = $this->test_input($post["Customer"]);
+        $truck              = $this->test_input($post["truck"]);
 
          $statusCR ="";
          $tgl_bayar = "";
@@ -192,10 +193,10 @@ class TransaksiModel{
          IF NOT EXISTS(SELECT * FROM $this->tbl_trans WHERE Id_Trans='".$id_trans."')
             BEGIN
                 INSERT INTO $this->tbl_trans (Id_Trans,noinvoice,tanggal_invoice,tanggal_jatuhtempo,Amount_Input,
-                Kelompok,recan_bayar,Keterangan,Catatan_Input,User_Input,StatusCR,Tgl_bayar,last_update_CR,Currency,Kurs,SupplierID)
+                Kelompok,recan_bayar,Keterangan,Catatan_Input,User_Input,StatusCR,Tgl_bayar,last_update_CR,Currency,Kurs,SupplierID,truck)
               VALUES('".$id_trans."','".$noinvoice."','".$tanggal_invoice."','".$tanggal_jatuhtempo."','".$amount."',
               '".$kelompok."','".$recan_bayar."','".$keterangan."','".$catatan."','".$userid."','".$statusCR."',
-              '".$tgl_bayar."','".$last_update_CR."','".$Currency."','".$kurs."','".$Customer."')
+              '".$tgl_bayar."','".$last_update_CR."','".$Currency."','".$kurs."','".$Customer."','".$truck."')
             END
         ";
   // echo "<pre>";
@@ -227,7 +228,7 @@ class TransaksiModel{
 
      public function getdataedit($id_trans){
             $query = "SELECT  Id_Trans,noinvoice,tanggal_invoice,tanggal_jatuhtempo,Amount_Input,SupplierID,
-            Kelompok,recan_bayar,Keterangan,Catatan_Input,Tgl_bayar,Currency,Kurs FROM $this->tbl_trans WHERE Id_Trans='".$id_trans."' ";
+            Kelompok,recan_bayar,Keterangan,Catatan_Input,Tgl_bayar,Currency,Kurs,truck FROM $this->tbl_trans WHERE Id_Trans='".$id_trans."' ";
 
           
             $result2 = $this->db->baca_sql($query);
@@ -244,10 +245,11 @@ class TransaksiModel{
             $kelompok      = rtrim(odbc_result($result2, 'Kelompok'));
             $keterangan    = rtrim(odbc_result($result2, 'Keterangan'));
             $catatan       = rtrim(odbc_result($result2, 'Catatan_Input'));
-            $Currency     = trim(odbc_result($result2, 'Currency'));
-            $Kurs         = trim(odbc_result($result2, 'Kurs'));
-            $Customer       = trim(odbc_result($result2, 'SupplierID'));
-            $Tgl_bayar       = trim(odbc_result($result2, 'Tgl_bayar'));
+            $Currency      = trim(odbc_result($result2, 'Currency'));
+            $Kurs          = trim(odbc_result($result2, 'Kurs'));
+            $Customer      = trim(odbc_result($result2, 'SupplierID'));
+            $Tgl_bayar     = trim(odbc_result($result2, 'Tgl_bayar'));
+            $truck     = trim(odbc_result($result2, 'truck'));
             // Format tanggal jika tidak kosong
             $tanggalInvoiceFormatted = !empty($tglInvoice) ? date("Y-m-d", strtotime($tglInvoice)) : '';
             $tanggalJatuhTempoFormatted = !empty($tglJatuhTempo) ? date("Y-m-d", strtotime($tglJatuhTempo)) : '';
@@ -275,7 +277,8 @@ class TransaksiModel{
                 "Tgl_bayar"          => $Tgl_bayarFormatted,
                 "Currency"           =>$Currency,
                 "Kurs"               =>floor($Kurs),
-                "Customer"           =>$Customer
+                "Customer"           =>$Customer,
+                "truck"              =>$truck
 
             );
         }
@@ -305,7 +308,8 @@ class TransaksiModel{
         $tanggalbayar       = $this->test_input($post["tanggalbayar"]);
         $Currency           = $this->test_input($post["Currency"]);
         $kurs               = $this->test_input($post["kurs"]);
-       $Customer             = $this->test_input($post["Customer"]);
+        $Customer             = $this->test_input($post["Customer"]);
+        $truck             = $this->test_input($post["truck"]);
         $tgl_comp = date("Y-m-d H:i:s");
     
          $statusCR ="";
@@ -327,7 +331,7 @@ class TransaksiModel{
          tanggal_jatuhtempo='".$tanggal_jatuhtempo."',Catatan_Input ='".$catatan."',Keterangan='".$keterangan."',Kelompok='".$kelompok."',
         Amount_Input='".$amount."', User_Edit='".$userid."',date_edit='".$tgl_comp."',
         StatusCR='".$statusCR."',Tgl_bayar='".$tgl_bayar."',last_update_CR='".$last_update_CR."',
-        Currency='".$Currency."',Kurs='".$kurs."',SupplierID='".$Customer."'
+        Currency='".$Currency."',Kurs='".$kurs."',SupplierID='".$Customer."',truck='".$truck."'
         WHERE Id_Trans='".$id_trans."'
         ";
         // die(var_dump($query));

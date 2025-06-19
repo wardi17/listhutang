@@ -91,6 +91,7 @@ $kol_terpilih = $transaksi["kelompok"];
                                <input type="hidden" id="Currencyset" value="<?=$transaksi["Currency"]?>"/>
                                <input type="hidden" id="Customerset" value="<?=$transaksi["Customer"]?>"/>
                                <input type="hidden" id="Kursset" value="<?=$transaksi["Kurs"]?>"/>
+                                <input type="hidden" id="truckset" value="<?=$transaksi["truck"]?>"/>
 
                         <form  id ="formtambah" class ="form form-horizontal" enctype="multipart/form-data">
                                  <div class="row col-md-12 mb-3">
@@ -148,7 +149,8 @@ $kol_terpilih = $transaksi["kelompok"];
                                           <span id="kelompokError" class="error"></span>
                                         </div>
                                     </div>
-                                    <div id="tampilCurrrencry"></div>   
+                                    <div id="tampilCurrrencry"></div>
+                                    <div id="tampilnokapal"></div>   
                                <div class="row align-items-center mb-3" id="barisPembayaran">
                                   <!-- Rencana Bayar -->
                                   <label for="recan_bayar" class="col-auto col-form-label">Rencana Bayar</label>
@@ -205,6 +207,7 @@ $kol_terpilih = $transaksi["kelompok"];
       const selected = $(this).val();
       // Bersihkan area klikbayar
       $("#klikbayar").empty();
+      $("#tampilnokapal").empty();
       $("#tampilCurrrencry").empty();
       // Jika bukan Supplier lokal atau Supplier import
       if (selected !== 'Supplier lokal' && selected !== 'Supplier import') {
@@ -231,6 +234,17 @@ $kol_terpilih = $transaksi["kelompok"];
 
           $("#tampilCurrrencry").html(html1);   
           getCurrency();
+      }
+
+      if(selected == 'Supplier lokal' || selected == 'Supplier import'){
+         const html2 =`<div class="row col-md-12 mb-3">
+                                                <label  style="width:10%;" for="truck" class="col-sm-3 form-label">No Kapal</label>
+                                            <div class="col-sm-4">
+                                               <input id="truck" name="truck"  type="text" class="form-control">
+                                                <span id="truckError" class="error"></span>
+                                            </div>
+                                     </div>`;
+        $("#tampilnokapal").html(html2);  
       }
     });
 
@@ -371,6 +385,7 @@ $kol_terpilih = $transaksi["kelompok"];
       const Tgl_dibayarset = $("#Tgl_dibayarset").val();
       const Kursset        = $("#Kursset").val();
       let  selected = $('input[name="kelompok"]:checked').val();
+      const truckset       = $("#truckset").val();
       $("#klikbayar").empty();
 
       if(Tgl_dibayarset ==''){
@@ -390,7 +405,7 @@ $kol_terpilih = $transaksi["kelompok"];
           $("#klikbayar").html(html);
       }
     
-          if(selected == 'Supplier import'){
+        if(selected == 'Supplier import'){
         const html1 =`       <div class="row col-md-12 mb-3">
                                                 <label  style="width:10%;" for="Currency" class="col-sm-3 form-label">Currency</label>
                                             <div class="col-sm-4">
@@ -410,6 +425,16 @@ $kol_terpilih = $transaksi["kelompok"];
           getCurrency();
       }
 
+    if(selected == 'Supplier lokal' || selected == 'Supplier import'){
+         const html2 =`<div class="row col-md-12 mb-3">
+                                                <label  style="width:10%;" for="truck" class="col-sm-3 form-label">No Kapal</label>
+                                            <div class="col-sm-4">
+                                               <input id="truck" name="truck" value="${truckset}"  type="text" class="form-control">
+                                                <span id="truckError" class="error"></span>
+                                            </div>
+                                     </div>`;
+        $("#tampilnokapal").html(html2);  
+      }
     
    }
   function goBack(){
@@ -468,6 +493,7 @@ $kol_terpilih = $transaksi["kelompok"];
         const kurs     = $("#kurs").val();
          const Customer = $("#Customer").find(":selected").val();
         let tglbayar = $("#tanggalbayar").val();
+        const truck  = $("#truck").val();
         let tanggalbayar = (tglbayar === undefined || tglbayar === null) ? '' : tglbayar;
         let curren = (Currency === undefined || Currency === null) ?'Rp' : Currency;
         let kurrest = (kurs === undefined || kurs === null) ? 0 : kurs;
@@ -503,7 +529,8 @@ $kol_terpilih = $transaksi["kelompok"];
                 "tanggalbayar":tanggalbayar,
                 "Currency":curren,
                 "kurs":kurrest,
-                "Customer":Customer
+                "Customer":Customer,
+                "truck":truck
             }
 
          // console.log(datas)
