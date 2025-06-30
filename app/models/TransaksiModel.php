@@ -87,15 +87,20 @@ class TransaksiModel{
 
 
     $query ="USP_TampilInputListhutang '".$tahun."'";
+
+    //die(var_dump($query));
     $result2 = $this->db->baca_sql($query);
     $datas = [];
 	  while(odbc_fetch_row($result2)){
-	  
+	    $amountInput   = rtrim(odbc_result($result2, 'amount'));
+          $formattedAmount = floor($amountInput) != $amountInput
+                ? number_format($amountInput, 2, ".", ",")
+                : number_format($amountInput, 0, ".", ",");
 		  $datas[] = array(
 			"tahun"=>rtrim(odbc_result($result2,'tahun')),
 			 "bulan"=>(int)rtrim(odbc_result($result2,'bulan')),
         "nama_bulan"=>rtrim(odbc_result($result2,'nama_bulan')),
-        "amount"=>number_format(rtrim(odbc_result($result2,'amount')),0,".",".")
+        "amount"=>$formattedAmount
 		  );
 		  
 		  }
@@ -262,13 +267,15 @@ class TransaksiModel{
             : '';
             // Ambil nama bulan (bisa ganti ke versi Indonesia kalau mau)
             $namaBulan = !empty($tglInvoice) ? date("F", strtotime($tglInvoice)) : '';
-
+            $formattedAmount = floor($amountInput) != $amountInput
+                ? number_format($amountInput, 2, ".", ",")
+                : number_format($amountInput, 0, ".", ",");
             $datas = array(
                 "Id_Trans"           => $idTrans,
                 "noinvoice"          => $noinvoice,
                 "tanggal_invoice"    => $tanggalInvoiceFormatted,
                 "tanggal_jatuhtempo" => $tanggalJatuhTempoFormatted,
-                "amount_input"       => number_format($amountInput, 0, ".", "."),
+                "amount_input"       =>  $formattedAmount,
                 "recan_bayar"        => $recanBayarFormatted,
                 "kelompok"           => $kelompok,
                 "keterangan"         => $keterangan,
@@ -331,7 +338,7 @@ class TransaksiModel{
          tanggal_jatuhtempo='".$tanggal_jatuhtempo."',Catatan_Input ='".$catatan."',Keterangan='".$keterangan."',Kelompok='".$kelompok."',
         Amount_Input='".$amount."', User_Edit='".$userid."',date_edit='".$tgl_comp."',
         StatusCR='".$statusCR."',Tgl_bayar='".$tgl_bayar."',last_update_CR='".$last_update_CR."',
-        Currency='".$Currency."',Kurs='".$kurs."',SupplierID='".$Customer."',truck='".$truck."'
+        Currency='".$Currency."',Kurs='".$kurs."',SupplierID='".$Customer."',truck='".$truck."' 
         WHERE Id_Trans='".$id_trans."'
         ";
         // die(var_dump($query));

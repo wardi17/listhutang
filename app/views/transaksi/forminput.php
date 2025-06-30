@@ -84,7 +84,6 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
                 <!-- Default box -->
                       <div class="card">
                         <div class="card-header">
-                      
                           <div class="row col-md-12">
                              <div class="col-md-1">
                             <button onclick="goBack()" type="button" class="btn btn-lg text-start"><i class="fa-solid fa-chevron-left"></i></button>
@@ -93,7 +92,6 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
                             <h5 class="text-center">Tambah Transaksi Bulan <?=$nama_bulan?></h5>
                             </div>
                           </div>
-                        
                         </div>
                           <div class="card-body">
                             <input type="hidden" id="id_trans" value=""/>
@@ -114,7 +112,6 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
                                               </div>
                                 </div>
                                 <div class="row col-md-12-col-12">
-
                                         <div class="row col-md-12 mb-3">
                                                 <label for="tanggal_invoice" style="width:10%;" class="col-sm-3 form-label">Tgl invoice</label>
                                             <div class="col-sm-2">
@@ -203,7 +200,7 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
       getCustomer();
       //getdatahariini();
         $('#amonut').on('keyup', function() {
-                var inputVal = $(this).val().replace(/[^,\d]/g, ''); // Menghapus karakter selain angka dan koma
+                var inputVal = $(this).val();
                 var formattedVal = formatRupiah(inputVal);
                 $(this).val(formattedVal);
             });
@@ -430,7 +427,7 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
         if(noinvoice !=""&& noinvoice !==undefined && tanggal_invoice !=""&& tanggal_invoice !==undefined &&
         tanggal_jatuhtempo !=""&& tanggal_jatuhtempo !==undefined && kelompok !=""&& kelompok !==undefined &&
         amonut !=="" && amonut !=="0"){
-            let replace_saldo = amonut.replace(/\./g,""); 
+            let replace_saldo = amonut.replace(/,/g, "").trim();
 
             const datas ={
                 "userid":userid,
@@ -458,21 +455,28 @@ $userlog = (isset( $_SESSION['login_user']))?  $_SESSION['login_user'] : '';
     }
 
 
-    function formatRupiah(angka, prefix) {
-            let number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
+      function formatRupiah(angka, prefix) {
+           
+            // Menghapus karakter yang bukan angka dan titik
+            let number_string = angka.replace(/[^0-9.]/g, '').toString();
+            let split = number_string.split('.');
+            //Batas angka desimal hanya dua digit
+            if(split[1]){
+              split[1] =split[1].substring(0,2);
             }
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+            
+            if (ribuan) {
+              separator = sisa ? ',' : '';
+              rupiah += separator + ribuan.join(',');
+            }
+            
+            rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
 
-            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix === undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+            return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
         }
-
 
 function getidtransnew(){
     var currentDate = new Date();

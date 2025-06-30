@@ -197,7 +197,7 @@ $kol_terpilih = $transaksi["kelompok"];
   <script>
   $(document).ready(function(){
     $('#amonut').on('keyup', function() {
-                var inputVal = $(this).val().replace(/[^,\d]/g, ''); // Menghapus karakter selain angka dan koma
+                var inputVal = $(this).val(); // Menghapus karakter selain angka dan koma
                 var formattedVal = formatRupiah(inputVal);
                 $(this).val(formattedVal);
             });
@@ -513,7 +513,7 @@ $kol_terpilih = $transaksi["kelompok"];
         if(noinvoice !=""&& noinvoice !==undefined && tanggal_invoice !=""&& tanggal_invoice !==undefined &&
         tanggal_jatuhtempo !=""&& tanggal_jatuhtempo !==undefined && kelompok !=""&& kelompok !==undefined &&
         amonut !=="" && amonut !=="0"){
-            let replace_saldo = amonut.replace(/\./g,""); 
+            let replace_saldo = amonut.replace(/,/g, "").trim(); 
 
             const datas ={
                 "userid":userid,
@@ -542,18 +542,25 @@ $kol_terpilih = $transaksi["kelompok"];
     }
   
   function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
+             // Menghapus karakter yang bukan angka dan titik
+            let number_string = angka.replace(/[^0-9.]/g, '').toString();
+            let split = number_string.split('.');
+            //Batas angka desimal hanya dua digit
+            if(split[1]){
+              split[1] =split[1].substring(0,2);
             }
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+            
+            if (ribuan) {
+              separator = sisa ? ',' : '';
+              rupiah += separator + ribuan.join(',');
+            }
+            
+            rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
 
-            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix === undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+            return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
         }
 
   </script>
